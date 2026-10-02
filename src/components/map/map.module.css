@@ -1,0 +1,133 @@
+.plate {
+  --le-ocean: color-mix(in oklab, var(--map-teal) 9%, var(--paper));
+  --le-stipple: color-mix(in oklab, var(--map-teal) 44%, var(--paper));
+  --le-land: color-mix(in oklab, var(--brass) 13%, var(--paper-high));
+  --le-coast: color-mix(in oklab, var(--ink) 76%, var(--paper));
+  --le-coast-wash: color-mix(in oklab, var(--map-teal) 40%, var(--paper));
+  --le-graticule: color-mix(in oklab, var(--map-teal) 32%, var(--paper));
+  --le-route: color-mix(in oklab, var(--brass) 88%, var(--ink));
+  --le-miss: color-mix(in oklab, var(--stamp-red) 64%, var(--ink));
+  --le-neatline: color-mix(in oklab, var(--ink) 84%, var(--paper));
+  --le-rose: color-mix(in oklab, var(--ink) 54%, var(--paper));
+
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.placeholder {
+  width: 100%;
+  aspect-ratio: 960 / 500;
+  background-color: color-mix(in oklab, var(--map-teal) 9%, var(--paper));
+}
+
+/* Every stroke below is non-scaling: the plate is authored at 960x500 but
+   renders from 360px to 1200px wide, and a scaled 0.6 unit hairline would
+   vanish on mobile and bloat on desktop. */
+.plate :is(path, circle, line) {
+  vector-effect: non-scaling-stroke;
+}
+
+.graticule {
+  fill: none;
+  stroke: var(--le-graticule);
+  stroke-width: 0.5;
+}
+
+.coastWash {
+  fill: none;
+  stroke: var(--le-coast-wash);
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  stroke-opacity: 0.5;
+}
+
+.country {
+  fill: var(--le-land);
+  stroke: var(--le-coast);
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+}
+
+.neatline {
+  fill: none;
+  stroke: var(--le-neatline);
+  stroke-width: 1.5;
+}
+
+/* The casing is the pale line engravers lay under a route so it stays legible
+   where it crosses a dense border; the dashed brass rides on top of it. */
+.routeCasing {
+  fill: none;
+  stroke: var(--paper-high);
+  stroke-width: 4.4;
+  stroke-opacity: 0.62;
+  stroke-linecap: round;
+}
+
+.route {
+  fill: none;
+  stroke: var(--le-route);
+  stroke-width: 2;
+  stroke-dasharray: 7 4;
+  stroke-linecap: round;
+}
+
+.wrongRing {
+  fill: var(--paper-high);
+  stroke: var(--le-coast);
+  stroke-width: 1.2;
+}
+
+.wrongCross {
+  fill: none;
+  stroke: var(--le-miss);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.trueRing {
+  fill: none;
+  stroke: var(--stamp-red);
+  stroke-width: 1.5;
+}
+
+.trueCore {
+  fill: var(--stamp-red);
+  stroke: var(--paper-high);
+  stroke-width: 1;
+}
+
+.trueTicks {
+  fill: none;
+  stroke: var(--stamp-red);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.roseRing {
+  fill: none;
+  stroke: var(--le-rose);
+  stroke-width: 0.7;
+}
+
+.roseMajor {
+  fill: var(--le-rose);
+}
+
+.roseMinor {
+  fill: none;
+  stroke: var(--le-rose);
+  stroke-width: 0.8;
+}
+
+.roseLabel,
+.note {
+  fill: var(--le-rose);
+  font-size: 13px;
+  text-anchor: middle;
+}
+
+.note {
+  fill: var(--ink-muted);
+}
