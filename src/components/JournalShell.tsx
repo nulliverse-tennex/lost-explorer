@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Footer } from "./Footer";
 
 const TOTAL_DAYS = 5;
 
@@ -57,7 +58,9 @@ export function JournalShell({
         </div>
       </main>
 
-      <footer className="journal__footer" data-slot="attribution" />
+      <footer className="journal__footer" data-slot="attribution">
+        <Footer />
+      </footer>
     </div>
   );
 }
