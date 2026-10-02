@@ -10,7 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "build-city-pool": "bun run scripts/build-city-pool.ts",
-    "puzzle-lint": "exit 0"
+    "puzzle-lint": "bun run scripts/puzzle-lint.ts"
   },
   "dependencies": {
     "@leeoniya/ufuzzy": "^1.0.19",
