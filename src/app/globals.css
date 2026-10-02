@@ -2,6 +2,107 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===========================================================================
+   The Lost Explorer — field-journal design tokens.
+
+   Every colour below is either one of five base pigments or a color-mix() of
+   them. Nothing else may introduce a hue. A future dark mode is a swap of the
+   five base values in this one block; derived tokens follow automatically.
+   =========================================================================== */
+
+:root {
+  /* base pigments */
+  --paper: #f0e6d2;
+  --ink: #1c1814;
+  --stamp-red: #8c2318;
+  --brass: #b07d2a;
+  --map-teal: #44757a;
+
+  /* derived surfaces */
+  --paper-high: color-mix(in oklab, var(--paper) 86%, #ffffff);
+  --paper-shade: color-mix(in oklab, var(--paper) 90%, var(--ink));
+  --paper-deep: color-mix(in oklab, var(--paper) 80%, var(--ink));
+
+  /* derived text */
+  --ink-muted: color-mix(in oklab, var(--ink) 66%, var(--paper));
+  --ink-faint: color-mix(in oklab, var(--ink) 42%, var(--paper));
+
+  /* derived rules */
+  --rule: color-mix(in oklab, var(--ink) 22%, var(--paper));
+  --rule-strong: color-mix(in oklab, var(--ink) 48%, var(--paper));
+  --rule-ruled-line: color-mix(in oklab, var(--map-teal) 28%, var(--paper));
+  --rule-hair: 1px;
+
+  /* artefact tape */
+  --tape: color-mix(in oklab, var(--brass) 44%, var(--paper));
+  --tape-edge: color-mix(in oklab, var(--brass) 68%, var(--ink));
+
+  /* type scale */
+  --step--2: 0.6875rem;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.625rem;
+  --step-3: clamp(2rem, 1.6rem + 2vw, 2.5rem);
+  --step-4: clamp(2.75rem, 2rem + 3.75vw, 4rem);
+  --step-5: clamp(3.5rem, 2.2rem + 6.5vw, 6rem);
+  --step-6: clamp(4.5rem, 2rem + 12vw, 9rem);
+
+  /* Handwriting faces lose stroke definition below ~17px, so journal
+     narration is clamped to a hard floor rather than scaling freely. */
+  --font-journal-min: 1.0625rem;
+  --text-journal: clamp(var(--font-journal-min), 1rem + 0.5vw, 1.375rem);
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.3;
+  --leading-body: 1.55;
+  --tracking-stamp: 0.14em;
+  --tracking-display: 0.01em;
+
+  /* spacing, 4px base */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* geometry */
+  --radius-sm: 1px;
+  --radius-md: 3px;
+  --radius-tape: 2px;
+
+  --shadow-lift: 0 1px 0 color-mix(in oklab, var(--ink) 8%, transparent),
+    0 6px 18px -10px color-mix(in oklab, var(--ink) 38%, transparent);
+  --shadow-press: inset 0 1px 2px color-mix(in oklab, var(--ink) 18%, transparent);
+
+  /* texture */
+  --texture-paper: url("/textures/paper.png");
+  --texture-tile: 224px;
+
+  /* motion */
+  --ease-paper: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-slow: 520ms;
+  --stagger: 70ms;
+}
+
+/* :where() on purpose — zero specificity. next/font/google sets these same
+   four tokens on <html> from a class (0,1,0), so it always wins regardless of
+   stylesheet order. A plain `:root` here would tie and beat it on source
+   order, silently rendering every face as its fallback. Do not "simplify".
+   (Tailwind 3 flattens @layer into unlayered CSS, so a layer cannot fix it.) */
+:where(:root) {
+  --font-display: "Bookman Old Style", Georgia, serif;
+  --font-stamp: "Courier New", ui-monospace, monospace;
+  --font-journal: "Segoe Script", "Bradley Hand", cursive;
+  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -11,4 +112,96 @@
 html,
 body {
   height: 100%;
+}
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--paper);
+  background-image: var(--texture-paper);
+  background-repeat: repeat;
+  background-size: var(--texture-tile) var(--texture-tile);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--stamp-red) 28%, var(--paper));
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--stamp-red);
+  outline-offset: 2px;
+}
+
+/* Every .ink-layer must sit inside a .stage. No element between them may carry
+   transform, filter, opacity < 1, or will-change — each silently kills the
+   blend. https://bugs.webkit.org/show_bug.cgi?id=129154 */
+.stage {
+  isolation: isolate;
+  position: relative;
+}
+
+.ink-layer {
+  mix-blend-mode: multiply;
+}
+
+/* face helpers: the only place a raw font-family is written */
+.face-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+}
+
+.face-stamp {
+  font-family: var(--font-stamp);
+  font-weight: 400;
+  letter-spacing: var(--tracking-stamp);
+  text-transform: uppercase;
+}
+
+.face-journal {
+  font-family: var(--font-journal);
+  font-size: var(--text-journal);
+  line-height: var(--leading-snug);
+}
+
+.face-ui {
+  font-family: var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Decorative SVG filters are the expensive, non-GPU-accelerated part of
+     the paper treatment; drop them entirely rather than just freezing them. */
+  [data-decorative-filter] {
+    filter: none !important;
+  }
+
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+    --stagger: 0ms;
+  }
 }
