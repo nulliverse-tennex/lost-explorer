@@ -1,0 +1,180 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.panelHeading {
+  font-size: var(--step-3);
+  color: var(--ink);
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-5);
+  border-top: var(--rule-hair) solid var(--rule);
+  padding-top: var(--space-5);
+}
+
+.hero {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding-bottom: var(--space-4);
+  border-bottom: var(--rule-hair) solid var(--rule);
+  text-align: center;
+}
+
+.heroTerm {
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.heroValue {
+  font-size: var(--step-5);
+  line-height: var(--leading-tight);
+  color: var(--stamp-red);
+  font-variant-numeric: tabular-nums;
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.figureTerm {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+.figureValue {
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+
+.distribution {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.distributionCaption {
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  text-align: left;
+  padding-bottom: var(--space-3);
+}
+
+/* The column headers orient screen readers but would crowd the tally visually at 390px, so they
+   are clipped rather than removed: display:none would drop them from the accessibility tree. */
+.distribution thead th {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.distribution tbody tr {
+  border-bottom: var(--rule-hair) solid var(--rule);
+}
+
+.distributionLabel {
+  width: 5.5rem;
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+  font-size: var(--step--2);
+  color: var(--ink-muted);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.distributionTally {
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+}
+
+.distributionCount {
+  width: 2.5rem;
+  padding: var(--space-2) 0;
+  font-size: var(--step-0);
+  color: var(--ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: block;
+  width: 100%;
+  height: var(--space-4);
+  background: var(--paper-shade);
+  border-radius: var(--radius-sm);
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  background: var(--map-teal);
+  border-radius: var(--radius-sm);
+}
+
+.transfer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-top: var(--rule-hair) solid var(--rule);
+  padding-top: var(--space-5);
+}
+
+.sectionHeading {
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.transferHint {
+  color: var(--ink-muted);
+}
+
+.transferLabel {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+.transferField {
+  width: 100%;
+  padding: var(--space-2);
+  background: var(--paper-high);
+  border: var(--rule-hair) solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: var(--step--1);
+  resize: vertical;
+  word-break: break-all;
+}
+
+.transferActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.button {
+  padding: var(--space-2) var(--space-4);
+  background: var(--paper-high);
+  border: var(--rule-hair) solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: var(--step--2);
+  cursor: pointer;
+}
+
+.transferStatus {
+  min-height: var(--space-5);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
