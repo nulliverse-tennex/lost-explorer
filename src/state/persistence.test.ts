@@ -8,6 +8,7 @@ import {
   importJournal,
   parseJournal,
   readJournal,
+  serializeJournal,
   writeJournal,
 } from './persistence';
 
@@ -157,19 +158,31 @@ describe('readJournal and writeJournal', () => {
     expect(readJournal()).toEqual({});
   });
 
-  it('survives corrupt meta and degrades to the zero state', () => {
-    writeJournal(journalOf(gameOn('2026-06-01')));
+  it('treats a corrupt version marker as the current version instead of losing history', () => {
+    const journal = journalOf(gameOn('2026-06-01'));
+    writeJournal(journal);
     localStorage.setItem(META_KEY, 'not json at all');
 
     expect(() => readJournal()).not.toThrow();
-    expect(readJournal()).toEqual({});
+    expect(readJournal()).toEqual(journal);
   });
 
-  it('discards a journal written by an unreadable future schema version', () => {
-    writeJournal(journalOf(gameOn('2026-06-01')));
+  it('normalizes an unknown version marker to the readable version rather than wiping the journal', () => {
+    const journal = journalOf(gameOn('2026-06-01'));
+    writeJournal(journal);
     localStorage.setItem(META_KEY, JSON.stringify({ _v: 999 }));
 
-    expect(readJournal()).toEqual({});
+    expect(readJournal()).toEqual(journal);
+  });
+
+  it('drops the days a declared version cannot migrate, without throwing', () => {
+    const payload = serializeJournal(journalOf(gameOn('2026-06-01')));
+
+    expect(() => parseJournal(payload, 999)).not.toThrow();
+    expect(parseJournal(payload, 999)).toEqual({});
+    expect(parseJournal(payload, SCHEMA_VERSION)).toEqual(
+      journalOf(gameOn('2026-06-01'))
+    );
   });
 
   it('retains older days when a newer day is added', () => {
