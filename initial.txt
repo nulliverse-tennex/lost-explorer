@@ -1,0 +1,955 @@
+# The Lost Explorer — Game Plan
+
+## 1. Core concept
+
+**The Lost Explorer** is a daily web-based geography deduction game.
+
+Every day, all players are trying to identify the same mystery city.
+
+The player receives one new clue per “day” of the explorer’s journey. The clues become progressively more useful.
+
+The player can guess after each clue or continue to the next day.
+
+The goal is to identify the city using as few clues as possible.
+
+The game should have the simplicity and daily ritual of Wordle, while gradually improving the player’s mental map of the world.
+
+---
+
+# 2. Main design principles
+
+The game should be:
+
+- One new mystery city every day.
+- The same puzzle for every player.
+- Five clue stages maximum.
+- Easy to understand without instructions after playing once.
+- Difficult to solve early, but increasingly fair.
+- Based on deduction rather than obscure trivia.
+- Consistent in structure every day.
+- Easy to generate from structured city data.
+- Shareable without revealing the answer.
+- Suitable for streaks, statistics, and leaderboards.
+
+The major design rule is:
+
+**Every city uses the same five clue categories and approximately the same wording.**
+
+We should not write an entirely custom story for every city.
+
+Instead, each daily puzzle is generated from structured data inserted into fixed narrative templates.
+
+---
+
+# 3. Game terminology
+
+Do not call attempts “lives.”
+
+Each clue stage is called a:
+
+**Day**
+
+Example:
+
+- Day 1
+- Day 2
+- Day 3
+- Day 4
+- Day 5
+
+This supports the narrative that the explorer has been lost for several days and is gradually discovering where they are.
+
+---
+
+# 4. Basic gameplay loop
+
+Each daily puzzle starts with Day 1.
+
+The player reads the clue and chooses between:
+
+**GUESS**
+
+or
+
+**CONTINUE**
+
+If they guess correctly:
+
+- Puzzle ends.
+- Their score is based primarily on which Day they solved it.
+- Completion time can be used as a secondary ranking factor.
+- Their streak and statistics update.
+
+If they guess incorrectly:
+
+- The guess is recorded.
+- They proceed to the next Day.
+
+If they choose Continue:
+
+- They voluntarily sacrifice the possibility of a better Day score.
+- The next clue appears.
+
+On Day 5:
+
+- The player receives the strongest clue.
+- They make their final guess.
+- If incorrect, they lose that day’s puzzle.
+
+---
+
+# 5. Fixed clue structure
+
+Every mystery city uses the following exact clue progression.
+
+## DAY 1 — Surroundings + population
+
+The explorer looks around and describes:
+
+1. The visible geography / environment.
+2. The approximate population of the urban area.
+
+The population should be explicitly shown numerically in millions.
+
+Example template:
+
+> I’ve had a look around. **[LANDSCAPE OBSERVATION].**
+>
+> This feels like a **[SIZE DESCRIPTION]** city — around **[POPULATION] million people** live here.
+
+Examples:
+
+> I’ve had a look around. The city is surrounded by hills, with mountains visible in the distance.
+>
+> This feels like a fairly busy city — around 1.2 million people live here.
+
+Or:
+
+> I’ve had a look around. The landscape seems mostly flat, and there’s a huge body of water nearby.
+>
+> This place feels enormous — around 14 million people live here.
+
+### Population rules
+
+Use **urban-area / metropolitan population**, not administrative city-boundary population where possible.
+
+Population should be approximate and rounded.
+
+Suggested descriptions:
+
+- Under 0.2m → small
+- 0.2–0.5m → fairly small
+- 0.5–1m → medium-sized
+- 1–2m → fairly busy
+- 2–5m → big
+- 5–10m → huge
+- 10m+ → enormous
+
+Exact wording can later be refined, but the numerical population should always remain visible.
+
+Do not make population overly precise.
+
+Examples:
+
+- 0.18m → 0.2 million
+- 0.74m → 0.7 million
+- 1.26m → 1.3 million
+- 4.7m → approximately 5 million
+- 13.8m → approximately 14 million
+
+### Day 1 geography data
+
+Possible environmental observations include:
+
+- Flat
+- Hilly
+- Mountainous
+- Mountains visible in one direction
+- Mountains surrounding the city
+- Coast nearby
+- Large lake nearby
+- Major river visible / running through city
+- Dry landscape
+- Tropical vegetation
+- Dense green hills
+- Desert surroundings
+- High-altitude appearance
+
+The clue must remain broad enough that Day 1 solves are impressive.
+
+---
+
+## DAY 2 — Distance to another city
+
+The explorer discovers a sign or other plausible reference to another known city.
+
+Fixed style:
+
+> I found a sign. It says **[REFERENCE CITY] is about [DISTANCE] km away.**
+
+Example:
+
+> I found a sign. It says Yerevan is about 170 km away.
+
+Or:
+
+> I found a sign. It says Zaragoza is about 250 km away.
+
+Distances should usually be rounded.
+
+Examples:
+
+- ~100 km
+- ~250 km
+- ~500 km
+- ~1,000 km
+
+Avoid unnecessary precision such as 173.4 km.
+
+### Important Day 2 design requirement
+
+The reference city must be selected carefully.
+
+It should:
+
+- Narrow the search meaningfully.
+- Not make the answer immediately obvious in most cases.
+- Usually be recognizable to a reasonably geographically interested player.
+- Not always be the nearest major city.
+- Provide a useful spatial relationship without requiring exact map calculations.
+
+This clue-selection logic should eventually be partially automated.
+
+---
+
+## DAY 3 — Flag colour
+
+The explorer notices a flag but cannot make out its full design.
+
+Fixed wording:
+
+> I saw a flag in the distance. It definitely had **[COLOUR]** in it.
+
+Only **one colour** should be revealed.
+
+Examples:
+
+Georgia:
+
+> It definitely had red in it.
+
+Estonia:
+
+> It definitely had blue in it.
+
+Brazil:
+
+> It definitely had green in it.
+
+Ukraine:
+
+> It definitely had yellow in it.
+
+### Flag colour selection rule
+
+Prefer a colour that provides information without immediately identifying the country.
+
+Where multiple colours are available, generally choose the less distinctive / less revealing option.
+
+The flag clue should narrow the possibilities, not solve the puzzle by itself.
+
+---
+
+## DAY 4 — Historical geography
+
+This introduces the history element.
+
+The explorer finds an old map or equivalent historical clue.
+
+Fixed construction:
+
+> I found an old map dated **[YEAR]**. Apparently this place was part of **[HISTORICAL STATE / EMPIRE / POLITICAL ENTITY]** at the time.
+
+Examples:
+
+Tbilisi:
+
+> I found an old map dated 1900. Apparently this place was part of the Russian Empire at the time.
+
+Sarajevo:
+
+> I found an old map dated 1980. Apparently this place was part of Yugoslavia at the time.
+
+Prague:
+
+> I found an old map dated 1910. Apparently this place was part of Austria-Hungary at the time.
+
+Hanoi:
+
+> I found an old map dated 1900. Apparently this place was part of French Indochina at the time.
+
+### Historical clue rules
+
+The year can differ for each city.
+
+Choose a year that creates an interesting but useful clue.
+
+The clue should teach historical geography rather than rely on random trivia.
+
+Prefer:
+
+- Historical states
+- Empires
+- Former federations
+- Colonial territories
+- Kingdoms
+- Former national borders
+
+Avoid clues requiring knowledge of very obscure individual historical events unless intentionally used for a harder mode later.
+
+---
+
+## DAY 5 — Local language
+
+This is the final and strongest clue.
+
+A local notices that the explorer is lost.
+
+Fixed construction:
+
+> Someone finally noticed I was lost. They looked at me and said:
+>
+> **“[LOCAL LANGUAGE VERSION OF ‘DO YOU NEED HELP?’]”**
+>
+> **FINAL GUESS**
+
+Do not display an English translation before the player guesses.
+
+Examples:
+
+Catalan:
+
+> “Necessites ajuda?”
+
+Estonian:
+
+> “Kas vajate abi?”
+
+Georgian:
+
+> “დახმარება ხომ არ გჭირდება?”
+
+Japanese:
+
+> “助けが必要ですか？”
+
+The phrase should always mean approximately:
+
+- Do you need help?
+- Can I help you?
+- Are you lost?
+
+Prefer one standardized meaning across all languages.
+
+Language is intentionally kept until Day 5 because it is frequently one of the strongest possible geographic clues.
+
+Day 5 should feel like a recognizable recurring moment in the game.
+
+---
+
+# 6. Clue strength progression
+
+The intended information curve is:
+
+### Day 1
+Broadly narrows the type and size of city.
+
+### Day 2
+Creates a strong geographic constraint.
+
+### Day 3
+Adds likely national / regional information.
+
+### Day 4
+Adds historical-political context.
+
+### Day 5
+Usually makes the country or linguistic region highly identifiable.
+
+The player should increasingly feel:
+
+“I think I know where I am.”
+
+The puzzle should not depend on one obscure fact.
+
+Correct solving should come from combining clues.
+
+---
+
+# 7. Guessing rules
+
+Players may guess once after each revealed Day.
+
+They may also choose to continue without guessing.
+
+Wrong guesses advance the player to the next Day.
+
+The same city cannot be guessed twice.
+
+Autocomplete / search should help normalize:
+
+- Alternate city spellings
+- Accents
+- Local names
+- English names
+- Historical names where appropriate
+
+Example:
+
+- München → Munich
+- Firenze → Florence
+- København → Copenhagen
+
+Potential policy for historical city names should be decided later.
+
+---
+
+# 8. Wrong-guess feedback
+
+Wrong guesses should provide only limited information.
+
+Recommended starting version:
+
+> ❌ Yerevan  
+> About 170 km away.
+
+Do **not** initially provide direction.
+
+Direction + distance could overpower the designed clue progression and make the game resemble existing city-direction games too closely.
+
+Potential distance bands instead of exact distance:
+
+- Very close — under 250 km
+- Close — under 750 km
+- Far — under 2,000 km
+- Very far — over 2,000 km
+
+Exact-distance vs distance-band feedback should be playtested.
+
+---
+
+# 9. City selection
+
+Do not make every answer a national capital.
+
+Otherwise experienced players will simply cycle through capitals.
+
+Include:
+
+- Capitals
+- Major cities
+- Medium-sized internationally relevant cities
+- Historic cities
+- Regional centres
+- Culturally important cities
+
+Potential examples:
+
+- Naples
+- Ulaanbaatar
+- Zanzibar City
+- Cusco
+- Sarajevo
+- Jaipur
+- Reykjavík
+- Tbilisi
+- Barcelona
+- Tallinn
+- Hanoi
+- Prague
+
+The answer pool should still avoid locations so obscure that the game becomes impossible for normal players.
+
+An eventual difficulty classification may be useful:
+
+- Easy
+- Standard
+- Hard
+
+But difficulty should not necessarily be shown before the puzzle.
+
+---
+
+# 10. Scoring
+
+Primary score should be based on which Day the player solves the city.
+
+Example:
+
+- Day 1 = best
+- Day 2 = excellent
+- Day 3 = good
+- Day 4 = acceptable
+- Day 5 = survived
+- Failure = lost
+
+Do not allow speed to dominate the game.
+
+Time can be used as a leaderboard tiebreaker between players who solved on the same Day.
+
+Potential scoring models can be tested later.
+
+The core metric users should care about is:
+
+**Average Day solved**
+
+Example player profile:
+
+- Average solve: Day 2.8
+- Best solve: Day 1
+- Current streak: 18
+- Win rate: 93%
+
+---
+
+# 11. End-of-game result
+
+On success:
+
+> FOUND
+>
+> You found yourself in **Tbilisi, Georgia**
+>
+> Solved on Day 3
+>
+> Time: 01:18
+
+On failure:
+
+> LOST
+>
+> The explorer was in **Montevideo, Uruguay**
+>
+> Your final guess: Córdoba, Argentina
+>
+> Distance: 1,057 km
+
+After the puzzle ends, it is acceptable to reveal more information.
+
+Possible post-game content:
+
+- City on a map
+- All five clues
+- Player’s guesses plotted geographically
+- Actual distance of each guess
+- Population source
+- Historical clue explanation
+- Flag
+- Translation of the language clue
+- Short educational fact about the city
+
+This reinforces the learning aspect.
+
+---
+
+# 12. Sharing
+
+Shared results must not reveal the answer.
+
+Possible format:
+
+The Lost Explorer #147
+
+🟩 Day 3  
+⏱ 01:18  
+🔥 12
+
+Or use a five-stage visual:
+
+⬜⬜🟩⬛⬛
+
+Meaning the city was solved on Day 3.
+
+More distinctive symbols can be designed later.
+
+Sharing should show:
+
+- Puzzle number
+- Day solved
+- Time if desired
+- Streak
+
+Never show city name.
+
+---
+
+# 13. Player statistics
+
+Track at minimum:
+
+- Games played
+- Games won
+- Win percentage
+- Current streak
+- Longest streak
+- Average Day solved
+- Day 1 solves
+- Day 2 solves
+- Day 3 solves
+- Day 4 solves
+- Day 5 solves
+- Failed puzzles
+- Average solve time
+
+Potential distribution:
+
+Day 1 ██
+Day 2 █████
+Day 3 ██████████
+Day 4 ██████
+Day 5 ███
+Lost  ██
+
+---
+
+# 14. Leaderboards
+
+Potential daily leaderboard ranking:
+
+1. Day solved
+2. Number of incorrect guesses
+3. Completion time
+
+Example ordering:
+
+Player A — Day 1 — 00:42  
+Player B — Day 1 — 01:10  
+Player C — Day 2 — 00:24
+
+Possible leaderboard types:
+
+- Daily
+- Weekly
+- Monthly
+- Friends
+- Global
+
+Leaderboards can be implemented after the core daily game is fun.
+
+---
+
+# 15. Daily puzzle data model
+
+Each city should have structured data similar to:
+
+```json
+{
+  "city": "Tbilisi",
+  "country": "Georgia",
+  "accepted_names": ["Tbilisi"],
+  "coordinates": {
+    "lat": 41.7151,
+    "lng": 44.8271
+  },
+  "urban_population_millions": 1.2,
+  "population_description": "fairly busy",
+  "day1_environment": "The city is surrounded by hills, with mountains visible in the distance.",
+  "day2_reference_city": "Yerevan",
+  "day2_distance_km": 170,
+  "day3_flag_colour": "red",
+  "day4_year": 1900,
+  "day4_historical_entity": "the Russian Empire",
+  "day5_language": "Georgian",
+  "day5_help_phrase": "დახმარება ხომ არ გჭირდება?"
+}
+```
+
+Additional fields should later store:
+
+- Sources
+- Urban population year
+- Historical-source verification
+- Language variants
+- Flag data
+- Difficulty estimate
+- Time zone
+- Country code
+- City aliases
+
+---
+
+# 16. Puzzle generation workflow
+
+The goal is that making a daily puzzle becomes mostly data entry / validation rather than creative writing.
+
+Proposed workflow:
+
+### Step 1
+Select mystery city.
+
+### Step 2
+Retrieve / verify:
+
+- Coordinates
+- Urban population
+- Physical geography
+- National flag colours
+- Historical political geography
+- Local language
+
+### Step 3
+Select a useful Day 2 reference city and calculate approximate distance.
+
+### Step 4
+Select the least revealing reasonable flag colour.
+
+### Step 5
+Choose a historically useful year and political entity.
+
+### Step 6
+Generate / verify the standardized “Do you need help?” phrase in an appropriate local language.
+
+### Step 7
+Run puzzle-quality checks.
+
+### Step 8
+Publish as the next daily puzzle.
+
+Most clue text should come from templates rather than being rewritten manually.
+
+---
+
+# 17. Quality-control checks
+
+Before publishing a city, test:
+
+### Day 1
+- Is the population reasonably current?
+- Are we consistently using urban-area / metropolitan population?
+- Is the environmental clue accurate?
+- Is it broad enough?
+
+### Day 2
+- Is the reference city well known enough?
+- Is the distance accurate?
+- Does this clue accidentally reveal the answer immediately?
+
+### Day 3
+- Is the colour genuinely on the national flag?
+- Is another colour less revealing?
+- Does this combine fairly with previous clues?
+
+### Day 4
+- Was the city genuinely part of the named entity in the stated year?
+- Is the historical wording politically and historically accurate?
+- Is the clue understandable to a general player?
+
+### Day 5
+- Is the phrase grammatically natural?
+- Is the chosen language actually used locally?
+- If several languages are common, is the selected language fair?
+- Does the phrase accidentally contain the city/country name?
+
+### Overall
+- Could several plausible cities still fit before Day 5?
+- Does each clue materially narrow the possibilities?
+- Is the final answer realistically solvable?
+- Is one clue disproportionately powerful?
+
+---
+
+# 18. Important edge cases
+
+## Multilingual cities
+
+Cities may have several widely spoken languages.
+
+We need a policy.
+
+Potential approach:
+
+Use the locally dominant language most likely to be heard in ordinary street interaction.
+
+For genuinely multilingual cities, this must be manually reviewed.
+
+Examples requiring care:
+
+- Brussels
+- Montreal
+- Barcelona
+- Singapore
+- Luxembourg
+- multilingual African cities
+
+---
+
+## City population definitions
+
+Population numbers vary hugely depending on:
+
+- City proper
+- Urban area
+- Metropolitan area
+
+The game should define one consistent methodology.
+
+Preferred:
+
+**Urban-area population where reliable data exists.**
+
+Display rounded approximate numbers to reduce disputes.
+
+---
+
+## Historic borders
+
+Historical territorial ownership can be politically sensitive or complicated.
+
+Use neutral wording:
+
+> “This place was part of [entity] at the time.”
+
+Avoid implying modern territorial claims.
+
+Every Day 4 clue should be fact-checked.
+
+---
+
+## Flag ambiguity
+
+Some countries have extremely distinctive colour combinations.
+
+Since only one colour is shown, select the clue that best preserves difficulty.
+
+---
+
+# 19. Tone and writing style
+
+The explorer should sound conversational and lightly humorous, but the writing should not distract from the deduction.
+
+Good:
+
+> I saw a flag in the distance. It definitely had red in it.
+
+Good:
+
+> Someone finally noticed I was lost.
+
+Avoid overly elaborate prose.
+
+The player should be able to scan each clue in a few seconds.
+
+The repeated structure should become familiar and comforting.
+
+---
+
+# 20. Recommended MVP
+
+Build the smallest playable version first.
+
+MVP should contain:
+
+- One daily city
+- Five fixed clue stages
+- Guess / Continue
+- City autocomplete
+- Correct / incorrect validation
+- Distance calculation for guesses
+- Daily reset
+- Streak
+- Basic statistics
+- Spoiler-free share result
+
+Do not initially prioritize:
+
+- Friends system
+- Complex leaderboards
+- Achievements
+- Audio pronunciation
+- Multiple game modes
+- Accounts unless needed for syncing
+- Elaborate animations
+
+The most important thing to test is whether the five-clue progression is genuinely fun.
+
+---
+
+# 21. Initial test set
+
+Before building a large city database, create approximately 20 manually curated puzzles.
+
+Use geographically varied cities.
+
+Suggested test cities:
+
+- Barcelona
+- Tbilisi
+- Tallinn
+- Sarajevo
+- Tokyo
+- Cusco
+- Reykjavík
+- Hanoi
+- Prague
+- Naples
+- Jaipur
+- Montevideo
+- Ulaanbaatar
+- Cape Town
+- Montreal
+- Istanbul
+- Auckland
+- Marrakech
+- Edinburgh
+- Buenos Aires
+
+Have testers play these without seeing the answers beforehand.
+
+Record:
+
+- Which Day they solved on
+- Their guesses
+- Whether any clue felt unfair
+- Whether any clue gave too much away
+- Which clues they enjoyed most
+- Whether population helped
+- Whether Day 5 was sufficiently strong
+
+The desired solve distribution should probably peak around **Day 3**, not Day 1 or Day 5.
+
+---
+
+# 22. Questions still to resolve through testing
+
+These should not block the MVP.
+
+1. Should wrong guesses reveal exact distance or only distance bands?
+2. Should players have one guess per Day or unlimited guesses with penalties?
+3. How should scoring work numerically?
+4. Should completion time affect score or only leaderboard ties?
+5. What exact population dataset should be used?
+6. How should multilingual cities choose the Day 5 language?
+7. Should capitals appear less frequently than other cities?
+8. Should Sunday / weekend puzzles be easier?
+9. Should players be allowed to play previous missed puzzles?
+10. Should post-game maps show the route between guesses?
+11. Should Day 5 eventually include optional audio pronunciation?
+12. Should difficulty be manually assigned or calculated from player results?
+
+---
+
+# 23. Core product identity
+
+The game's strongest idea is not simply:
+
+**“Guess a city.”**
+
+It is:
+
+**“You are lost somewhere in the world. Each day you discover one more thing about where you are.”**
+
+The five clues should gradually move the player through:
+
+**physical geography → relative geography → national identity → historical geography → language**
+
+That progression is the central mechanic and should remain consistent across every puzzle.
