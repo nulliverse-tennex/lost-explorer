@@ -1,0 +1,255 @@
+/* --stamp-rot is repeated in every keyframe because the transform shorthand
+   would otherwise flatten the resting rotation away mid-animation. */
+@keyframes stampThud {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--stamp-rot)) scale(1.85);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(var(--stamp-rot)) scale(0.942);
+  }
+  72% {
+    transform: rotate(var(--stamp-rot)) scale(1.03);
+  }
+  87% {
+    transform: rotate(var(--stamp-rot)) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(var(--stamp-rot)) scale(1);
+  }
+}
+
+@keyframes tapedIn {
+  from {
+    opacity: 0;
+    transform: rotate(calc(var(--card-tilt) + 2.4deg)) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(var(--card-tilt)) translateY(0);
+  }
+}
+
+.stamp {
+  --stamp-rot: 0deg;
+  --stamp-rule: 3px;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-4);
+  transform: rotate(var(--stamp-rot));
+  animation: stampThud var(--dur-base) var(--ease-paper) both;
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: text;
+}
+
+/* The rule is a separate layer so the two-pass turbulence filter never
+   touches the text: only the box is roughened, the words stay crisp and
+   screen-reader readable. #le-rough-edge lives in PaperFilters.tsx. */
+.stampEdge {
+  position: absolute;
+  inset: 0;
+  border: var(--stamp-rule) solid currentColor;
+  border-radius: var(--radius-sm);
+  filter: url(#le-rough-edge);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.stampEdge::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid currentColor;
+  opacity: 0.55;
+}
+
+.stampInk {
+  position: relative;
+  display: block;
+}
+
+.stampDay {
+  color: var(--ink);
+  font-size: var(--step-2);
+  --stamp-rot: -2.4deg;
+}
+
+.stampWrong {
+  color: var(--stamp-red);
+  font-size: var(--step-3);
+  --stamp-rot: 3.2deg;
+  --stamp-rule: 4px;
+  letter-spacing: var(--tracking-stamp);
+}
+
+.stampFound,
+.stampLost {
+  font-size: var(--step-4);
+  padding: var(--space-3) var(--space-6);
+  --stamp-rule: 5px;
+  letter-spacing: var(--tracking-stamp);
+}
+
+.stampFound {
+  color: var(--stamp-red);
+  --stamp-rot: -4deg;
+}
+
+.stampLost {
+  color: var(--ink);
+  --stamp-rot: 2.6deg;
+}
+
+.tapeStrip {
+  --tape-rot: 0deg;
+
+  position: absolute;
+  z-index: 2;
+  width: 76px;
+  height: 22px;
+  background-color: var(--tape);
+  background-image: repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--tape-edge) 16%, transparent) 0 1px,
+      transparent 1px 4px
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--paper-high) 34%, transparent),
+      transparent 42%,
+      color-mix(in oklab, var(--tape-edge) 18%, transparent)
+    );
+  border-radius: var(--radius-tape);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--tape-edge) 22%, transparent);
+  opacity: 0.74;
+  mix-blend-mode: multiply;
+  filter: url(#le-rough-edge);
+  transform: rotate(var(--tape-rot));
+  pointer-events: none;
+}
+
+.tapeTopLeft {
+  top: -11px;
+  left: -16px;
+  --tape-rot: -38deg;
+}
+
+.tapeTopRight {
+  top: -11px;
+  right: -16px;
+  --tape-rot: 34deg;
+}
+
+.tapeBottomLeft {
+  bottom: -11px;
+  left: -16px;
+  --tape-rot: 32deg;
+}
+
+.tapeBottomRight {
+  bottom: -11px;
+  right: -16px;
+  --tape-rot: -36deg;
+}
+
+.tapeTopCenter {
+  top: -12px;
+  left: 50%;
+  margin-left: -38px;
+  --tape-rot: -1.8deg;
+}
+
+.tapeLoose {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  --tape-rot: -2.4deg;
+}
+
+/* Three mask layers composited with the default `add`. Repeating a strip of
+   fixed height is what keeps the fibres a constant size at any element size;
+   one stretched mask or an objectBoundingBox clip-path would scale them. */
+
+.torn {
+  --torn-depth: 9px;
+  --torn-top: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="9" viewBox="0 0 120 9"><path d="M0 4L5 2.1 10 4.6 16 1.7 22 4.2 27 2 33 5 39 2.8 45 1.5 51 4.4 57 2.3 63 5.2 69 3 74 1.6 80 4.5 86 2.4 92 5.1 98 2.9 104 1.8 110 4.3 115 2.6 120 4 120 9 0 9Z" fill="black"/></svg>');
+  --torn-bottom: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="9" viewBox="0 0 120 9"><g transform="translate(0,9) scale(1,-1)"><path d="M0 4L5 2.1 10 4.6 16 1.7 22 4.2 27 2 33 5 39 2.8 45 1.5 51 4.4 57 2.3 63 5.2 69 3 74 1.6 80 4.5 86 2.4 92 5.1 98 2.9 104 1.8 110 4.3 115 2.6 120 4 120 9 0 9Z" fill="black"/></g></svg>');
+}
+
+.tornTop {
+  mask-image: var(--torn-top), linear-gradient(black, black);
+  mask-size: 120px var(--torn-depth), 100% calc(100% - var(--torn-depth));
+  mask-position: left top, left var(--torn-depth);
+  mask-repeat: repeat-x, no-repeat;
+}
+
+.tornBottom {
+  mask-image: var(--torn-bottom), linear-gradient(black, black);
+  mask-size: 120px var(--torn-depth), 100% calc(100% - var(--torn-depth));
+  mask-position: left bottom, left top;
+  mask-repeat: repeat-x, no-repeat;
+}
+
+.tornBoth {
+  mask-image: var(--torn-top), var(--torn-bottom), linear-gradient(black, black);
+  mask-size: 120px var(--torn-depth), 120px var(--torn-depth),
+    100% calc(100% - (2 * var(--torn-depth)));
+  mask-position: left top, left bottom, left var(--torn-depth);
+  mask-repeat: repeat-x, repeat-x, no-repeat;
+}
+
+.card {
+  --card-tilt: 0deg;
+  --card-delay: 0ms;
+
+  position: relative;
+  transform: rotate(var(--card-tilt));
+  animation: tapedIn var(--dur-base) var(--ease-paper) var(--card-delay) both;
+  /* The card is a stacking context on purpose: ink laid on top of it should
+     multiply against this sheet, not against the page beneath it. */
+  isolation: isolate;
+}
+
+.cardSheet {
+  position: relative;
+  background-color: var(--paper-high);
+  background-image: var(--texture-paper);
+  background-size: var(--texture-tile) var(--texture-tile);
+  border: var(--rule-hair) solid var(--rule);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lift);
+  padding: var(--space-5);
+}
+
+/* A masked sheet cannot cast its own box-shadow — the mask would cut the
+   shadow off at the same ragged line. Lift the whole card with a drop-shadow
+   instead so the shadow follows the torn silhouette. */
+.cardTorn {
+  filter: drop-shadow(
+    0 5px 9px color-mix(in oklab, var(--ink) 24%, transparent)
+  );
+}
+
+.cardTorn .cardSheet {
+  box-shadow: none;
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+
+/* globals.css shortens every animation to 1ms, which still leaves a named,
+   running animation. Removing it outright leaves only the resting transform. */
+@media (prefers-reduced-motion: reduce) {
+  .stamp,
+  .card {
+    animation: none;
+  }
+}
