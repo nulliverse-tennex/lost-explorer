@@ -1,0 +1,45 @@
+{
+  "id": "sarajevo",
+  "city": "Sarajevo",
+  "country": "Bosnia and Herzegovina",
+  "countryCode": "BA",
+  "geonameId": 3191281,
+  "coordinates": {
+    "lat": 43.84864,
+    "lng": 18.35644
+  },
+  "publishDate": "2026-06-06",
+  "day1": {
+    "landscape": "mountains-surrounding",
+    "metroPopulationMillions": 0.42,
+    "populationSource": {
+      "name": "Thomas Brinkhoff: City Population",
+      "url": "https://www.citypopulation.de/en/bosnia/cities/",
+      "asOfYear": 2022
+    }
+  },
+  "day2": {
+    "referenceCity": "Berlin",
+    "referenceCityCountry": "Germany",
+    "referenceCityCoordinates": {
+      "lat": 52.52437,
+      "lng": 13.41053
+    },
+    "distanceKm": 1050,
+    "recognisability": "global"
+  },
+  "day3": {
+    "flagColours": ["blue", "yellow", "white"]
+  },
+  "day4": {
+    "mapYear": 1980,
+    "historicalEntity": "Yugoslavia",
+    "historicalSourceUrl": "https://en.wikipedia.org/wiki/Socialist_Federal_Republic_of_Yugoslavia"
+  },
+  "day5": {
+    "language": "Bosnian",
+    "languageCode": "bs",
+    "helpPhrase": "Treba li ti pomoć?",
+    "helpPhraseTranslation": "Do you need help?"
+  }
+}

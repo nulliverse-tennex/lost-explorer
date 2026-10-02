@@ -1,0 +1,45 @@
+{
+  "id": "reykjavik",
+  "city": "Reykjavík",
+  "country": "Iceland",
+  "countryCode": "IS",
+  "geonameId": 3413829,
+  "coordinates": {
+    "lat": 64.13548,
+    "lng": -21.89541
+  },
+  "publishDate": "2026-06-05",
+  "day1": {
+    "landscape": "coastal",
+    "metroPopulationMillions": 0.247,
+    "populationSource": {
+      "name": "Thomas Brinkhoff: City Population",
+      "url": "https://www.citypopulation.de/en/iceland/reykjavik/",
+      "asOfYear": 2026
+    }
+  },
+  "day2": {
+    "referenceCity": "London",
+    "referenceCityCountry": "United Kingdom",
+    "referenceCityCoordinates": {
+      "lat": 51.50853,
+      "lng": -0.12574
+    },
+    "distanceKm": 1900,
+    "recognisability": "global"
+  },
+  "day3": {
+    "flagColours": ["blue", "white", "red"]
+  },
+  "day4": {
+    "mapYear": 1900,
+    "historicalEntity": "the Kingdom of Denmark",
+    "historicalSourceUrl": "https://en.wikipedia.org/wiki/History_of_Iceland"
+  },
+  "day5": {
+    "language": "Icelandic",
+    "languageCode": "is",
+    "helpPhrase": "Þarftu hjálp?",
+    "helpPhraseTranslation": "Do you need help?"
+  }
+}

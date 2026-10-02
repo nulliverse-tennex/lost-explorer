@@ -1,0 +1,45 @@
+{
+  "id": "hanoi",
+  "city": "Hanoi",
+  "country": "Vietnam",
+  "countryCode": "VN",
+  "geonameId": 1581130,
+  "coordinates": {
+    "lat": 21.0245,
+    "lng": 105.84117
+  },
+  "publishDate": "2026-06-03",
+  "day1": {
+    "landscape": "flat",
+    "metroPopulationMillions": 7.55,
+    "populationSource": {
+      "name": "Thomas Brinkhoff: City Population",
+      "url": "https://www.citypopulation.de/en/world/agglomerations/",
+      "asOfYear": 2026
+    }
+  },
+  "day2": {
+    "referenceCity": "Bangkok",
+    "referenceCityCountry": "Thailand",
+    "referenceCityCoordinates": {
+      "lat": 13.75398,
+      "lng": 100.50144
+    },
+    "distanceKm": 1000,
+    "recognisability": "global"
+  },
+  "day3": {
+    "flagColours": ["red", "yellow"]
+  },
+  "day4": {
+    "mapYear": 1900,
+    "historicalEntity": "French Indochina",
+    "historicalSourceUrl": "https://en.wikipedia.org/wiki/French_Indochina"
+  },
+  "day5": {
+    "language": "Vietnamese",
+    "languageCode": "vi",
+    "helpPhrase": "Bạn có cần giúp đỡ không?",
+    "helpPhraseTranslation": "Do you need help?"
+  }
+}

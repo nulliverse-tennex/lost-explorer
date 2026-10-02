@@ -1,0 +1,45 @@
+{
+  "id": "barcelona",
+  "city": "Barcelona",
+  "country": "Spain",
+  "countryCode": "ES",
+  "geonameId": 3128760,
+  "coordinates": {
+    "lat": 41.38879,
+    "lng": 2.15899
+  },
+  "publishDate": "2026-06-02",
+  "day1": {
+    "landscape": "coastal",
+    "metroPopulationMillions": 4.95,
+    "populationSource": {
+      "name": "Thomas Brinkhoff: City Population",
+      "url": "https://www.citypopulation.de/en/world/agglomerations/",
+      "asOfYear": 2026
+    }
+  },
+  "day2": {
+    "referenceCity": "London",
+    "referenceCityCountry": "United Kingdom",
+    "referenceCityCoordinates": {
+      "lat": 51.50853,
+      "lng": -0.12574
+    },
+    "distanceKm": 1150,
+    "recognisability": "global"
+  },
+  "day3": {
+    "flagColours": ["red", "yellow"]
+  },
+  "day4": {
+    "mapYear": 1812,
+    "historicalEntity": "the French Empire",
+    "historicalSourceUrl": "https://en.wikipedia.org/wiki/French_departments_of_Catalonia"
+  },
+  "day5": {
+    "language": "Catalan",
+    "languageCode": "ca",
+    "helpPhrase": "Necessites ajuda?",
+    "helpPhraseTranslation": "Do you need help?"
+  }
+}

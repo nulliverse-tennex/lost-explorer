@@ -1,0 +1,45 @@
+{
+  "id": "tbilisi",
+  "city": "Tbilisi",
+  "country": "Georgia",
+  "countryCode": "GE",
+  "geonameId": 611717,
+  "coordinates": {
+    "lat": 41.69143,
+    "lng": 44.83412
+  },
+  "publishDate": "2026-06-01",
+  "day1": {
+    "landscape": "hilly",
+    "metroPopulationMillions": 1.52,
+    "populationSource": {
+      "name": "Thomas Brinkhoff: City Population",
+      "url": "https://www.citypopulation.de/en/world/agglomerations/",
+      "asOfYear": 2026
+    }
+  },
+  "day2": {
+    "referenceCity": "Istanbul",
+    "referenceCityCountry": "Turkey",
+    "referenceCityCoordinates": {
+      "lat": 41.01384,
+      "lng": 28.94966
+    },
+    "distanceKm": 1350,
+    "recognisability": "global"
+  },
+  "day3": {
+    "flagColours": ["red", "white"]
+  },
+  "day4": {
+    "mapYear": 1900,
+    "historicalEntity": "the Russian Empire",
+    "historicalSourceUrl": "https://en.wikipedia.org/wiki/Tiflis_Governorate"
+  },
+  "day5": {
+    "language": "Georgian",
+    "languageCode": "ka",
+    "helpPhrase": "დახმარება ხომ არ გჭირდება?",
+    "helpPhraseTranslation": "Do you need help?"
+  }
+}

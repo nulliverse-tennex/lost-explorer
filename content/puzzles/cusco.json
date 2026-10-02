@@ -1,0 +1,45 @@
+{
+  "id": "cusco",
+  "city": "Cusco",
+  "country": "Peru",
+  "countryCode": "PE",
+  "geonameId": 3941584,
+  "coordinates": {
+    "lat": -13.53188,
+    "lng": -71.96701
+  },
+  "publishDate": "2026-06-04",
+  "day1": {
+    "landscape": "high-altitude",
+    "metroPopulationMillions": 0.492,
+    "populationSource": {
+      "name": "Thomas Brinkhoff: City Population",
+      "url": "https://www.citypopulation.de/en/peru/cities/",
+      "asOfYear": 2022
+    }
+  },
+  "day2": {
+    "referenceCity": "Buenos Aires",
+    "referenceCityCountry": "Argentina",
+    "referenceCityCoordinates": {
+      "lat": -34.61315,
+      "lng": -58.37723
+    },
+    "distanceKm": 2700,
+    "recognisability": "global"
+  },
+  "day3": {
+    "flagColours": ["red", "white"]
+  },
+  "day4": {
+    "mapYear": 1700,
+    "historicalEntity": "the Viceroyalty of Peru",
+    "historicalSourceUrl": "https://en.wikipedia.org/wiki/Viceroyalty_of_Peru"
+  },
+  "day5": {
+    "language": "Spanish",
+    "languageCode": "es",
+    "helpPhrase": "¿Necesitas ayuda?",
+    "helpPhraseTranslation": "Do you need help?"
+  }
+}
