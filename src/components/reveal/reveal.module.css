@@ -3,15 +3,21 @@
 
    Mobile-first single column is the DEFAULT, not a breakpoint override — the
    two-page spread is a desktop metaphor and must never force the 390px board
-   into a horizontal scroll. */
+   into a horizontal scroll.
 
+   Hence the gutter below: PaperCard's washi tape overhangs its own card by up
+   to ~19px, enough on its own to push scrollWidth past 390px at --space-4.
+   `overflow-x: clip` — not `hidden`, which would make this a scroll container
+   — backstops any future overhanging artefact, and neither property disturbs
+   the `.stage` / `.ink-layer` blend. */
 .spread {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
   max-inline-size: 78rem;
   margin-inline: auto;
-  padding: var(--space-5) var(--space-4) var(--space-7);
+  padding: var(--space-5) var(--space-5) var(--space-7);
+  overflow-x: clip;
 }
 
 .page {
