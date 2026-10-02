@@ -1,0 +1,417 @@
+THE LOST EXPLORER — DESIGN BRIEF
+================================================================================
+You are redesigning the entire visual layer of a finished, working web game.
+
+The engine is DONE and TESTED (295 passing tests). Do not rebuild it. Your job is
+the look and feel only. This document tells you exactly what you may change, what
+you must not touch, and the handful of rules that look like styling choices but
+are actually game rules.
+
+Read all of it before you start. The section "SEVEN RULES THAT ARE NOT STYLING"
+is the part people get wrong.
+
+================================================================================
+1. WHAT THE GAME IS
+================================================================================
+
+The Lost Explorer is a daily geography deduction game. Wordle's ritual, but you
+are working out WHERE you are rather than guessing a word.
+
+One mystery city per day. Everyone in the world gets the same city. It resets at
+00:00 UTC.
+
+The conceit: you are an explorer who has woken up lost. Each "Day" you discover
+one more thing about where you are. Five Days maximum.
+
+  Day 1  Surroundings   landscape + population of the urban area
+  Day 2  A road sign    "<FAMOUS CITY> is about N km away"
+  Day 3  A flag         which colours it had (not the design)
+  Day 4  An old map     which historical state this place belonged to, and when
+  Day 5  A voice        someone asks "do you need help?" in the local language
+
+The clue ladder moves deliberately through:
+  physical geography -> relative geography -> national identity ->
+  historical geography -> language
+
+After each Day the player chooses GUESS or CONTINUE. One guess per Day, five
+maximum. Guessing wrong advances the Day AND leaves a permanent mark. Continuing
+advances the Day with a clean record. That tension is the whole game.
+
+On Day 5 there is no CONTINUE. Only a final guess.
+
+The score people care about is "average Day solved", not speed. A Day 1 solve is
+extraordinary. Day 3 is the intended average.
+
+Tone: the explorer is conversational and lightly wry, never florid. A player
+should absorb a clue in a few seconds. The repetition is meant to feel familiar
+and comforting, like a ritual.
+
+================================================================================
+2. CURRENT AESTHETIC — AND YOUR MANDATE
+================================================================================
+
+The existing design is an explorer's FIELD JOURNAL: aged paper, india ink,
+rubber stamps, washi tape, a torn flag swatch, a hand-drawn antique world map.
+Palette is cream / near-black ink / one oxblood accent / brass / faded map teal.
+
+YOU ARE NOT OBLIGED TO KEEP ANY OF IT.
+
+This is a from-scratch redesign. You may discard the journal metaphor entirely
+and take the game somewhere completely different, as long as you honour section 4
+(the seven rules) and section 6 (the data you must display).
+
+The original direction brief was "adventure / traveller / diary theme — creative
+and bold". Treat that as the starting point for the feeling, not as a cage. If
+you have a stronger idea, make the case for it and execute it with conviction.
+
+Two things the current design got right and worth keeping in some form:
+  - A limited palette with ONE hot accent reads as deliberate and confident.
+  - Big scale contrast: large display type against small clean UI text.
+
+One thing to beat: the current version is handsome but quiet. It could be bolder.
+
+Non-negotiable regardless of direction:
+  - MOBILE-FIRST. This is a daily-ritual game; assume 80%+ phone usage. Design
+    390px first, then scale up. No horizontal scroll at 390px or 360px. Actions
+    within thumb reach.
+  - Zero layout shift when a new clue appends. The already-read clues must not
+    move when Day N+1 arrives.
+  - Honour prefers-reduced-motion: remove motion, don't just shorten it.
+  - Text contrast must meet WCAG AA (4.5:1 body, 3:1 large). The build is gated
+    on Lighthouse mobile accessibility >= 90.
+
+================================================================================
+3. WHAT YOU MAY CHANGE / WHAT YOU MUST NOT TOUCH
+================================================================================
+
+FREE TO REWRITE COMPLETELY
+  src/app/globals.css               design tokens
+  src/styles/                       font wiring
+  public/textures/                  textures/assets
+  src/components/JournalShell.tsx   app shell
+  src/components/PaperCard.tsx      artefact container
+  src/components/RubberStamp.tsx    stamps (day / wrong / found / lost)
+  src/components/WashiTape.tsx      tape
+  src/components/TornEdge.tsx       torn edge
+  src/components/PaperFilters.tsx   SVG filters
+  src/components/clues/*            the five clue artefacts
+  src/components/reveal/*           endgame screen
+  src/components/stats/*            statistics panel
+  src/components/map/*              world map presentation (see 5.4)
+  src/components/GuessInput.tsx, CityDropdown.tsx, ActionRow.tsx
+  src/components/ClueStack.tsx, Countdown.tsx, RestingState.tsx, ShareButton.tsx
+  src/components/Footer.tsx         (but keep the attribution text, see 4.8)
+
+DO NOT TOUCH — this is the tested engine
+  src/domain/                       game rules, scoring, geo maths, clue text
+  src/state/                        persistence, streaks, the game hook
+  src/search/                       city autocomplete engine
+  src/server/                       puzzle selection
+  src/app/api/                      the clue delivery route
+  content/                          verified puzzle facts
+  scripts/                          data pipeline + puzzle-lint
+  public/data/                      city pool + world geometry
+
+src/components/GameBoard.tsx is the wiring layer. You may restructure its markup
+but must keep it calling useDailyGame() and passing the same values through.
+
+================================================================================
+4. SEVEN RULES THAT ARE NOT STYLING
+================================================================================
+
+These live in presentation files and look like arbitrary restrictions. They are
+game-integrity rules. THREE OF THEM HAVE ALREADY SHIPPED AS BUGS ONCE AND HAD TO
+BE FIXED. Please do not reintroduce them.
+
+4.1  DAY 5 MUST NOT NAME THE LANGUAGE BEFORE THE GAME ENDS.
+     Printing "Georgian" hands the player Georgia and makes the final Day a
+     guaranteed solve. Recognising the language from its script IS the clue.
+     Show the phrase. Reveal the language name only after resolution.
+
+4.2  DAY 3 MUST NOT SHOW THE REAL FLAG BEFORE THE GAME ENDS.
+     Showing Georgia's flag identifies the country instantly. Day 3 reveals the
+     COLOUR SET only ("red and white — and no other colours"), never the layout.
+     Represent colours abstractly. The actual flag may appear after resolution.
+
+4.3  THE TRANSLATION MUST BE ABSENT FROM THE DOM, NOT CSS-HIDDEN.
+     helpPhraseTranslation hidden with display:none is one devtools glance from
+     spoiling the puzzle. Render it conditionally or not at all.
+
+4.4  WRONG GUESSES SHOW DISTANCE BANDS, NEVER EXACT KILOMETRES.
+     "Very close / Close / Far / Very far". Exact distances let a player
+     trilaterate the answer from three guesses without reading a single clue.
+
+4.5  NO CONTINUE BUTTON ON DAY 5.
+     There is no Day 6. Day 5 offers only a final guess.
+
+4.6  CLUES ACCUMULATE. NEVER REPLACE, NEVER CAROUSEL.
+     The player must be able to re-read every earlier clue while deciding. The
+     deduction depends on holding all revealed clues at once. A carousel or a
+     "current clue only" view breaks the core mechanic.
+
+4.7  ALL CLUE TEXT MUST BE REAL DOM TEXT.
+     Never bake clue text into an image, a canvas, or an SVG <path>. It must be
+     selectable and readable by screen readers. Decorative elements should be
+     aria-hidden; the clue sentences must be in the accessibility tree.
+
+4.8  (BONUS, LEGAL) THE GEONAMES ATTRIBUTION MUST STAY VISIBLE IN THE APP.
+     "City data (c) GeoNames.org, licensed under CC BY 4.0" — CC BY 4.0 requires
+     it in the product, not only in the README. You may restyle it freely, but it
+     must remain rendered and legible. Same for the other credits in Footer.tsx.
+
+ONE TECHNICAL TRAP
+     If you use mix-blend-mode (multiply etc.) for ink-on-paper layering, the
+     blended elements must sit inside a wrapper with `isolation: isolate`, and NO
+     ancestor between them may have transform, filter, opacity < 1, or
+     will-change. Those create a new stacking context and the blend fails
+     SILENTLY — no error, just flat-looking colour.
+
+     Also: SVG filters (feTurbulence/feDisplacementMap) are NOT GPU-accelerated.
+     6-15ms per frame on desktop, worse on mobile, with a known Firefox perf bug
+     and iOS Safari crash reports when animated over large areas. Use them only
+     on small, static elements with a fixed seed. For full-bleed texture, use a
+     pre-baked tileable image (the current one is 20KB).
+
+================================================================================
+5. THE SCREENS YOU NEED TO DESIGN
+================================================================================
+
+5.1  THE GAME (route "/")
+     The main surface. Shows the revealed clue cards stacked in order, the
+     current Day indicator, the puzzle number, the guess input with autocomplete,
+     and the GUESS / CONTINUE actions.
+     States: loading, Day 1 through Day 5, and wrong-guess marks persisting
+     inline after the clue they were made on.
+
+5.2  A WRONG GUESS
+     Must read as a permanent record, not a transient toast. Shows the guessed
+     city name and its distance BAND. It stays on screen for the rest of the game.
+
+5.3  THE GUESS INPUT
+     Text field + autocomplete dropdown over ~22,850 world cities. Critical
+     behaviours to preserve:
+       - Submit stays DISABLED until the player selects a real city from the
+         dropdown (free text can never be submitted).
+       - Dropdown labels disambiguate by country ("Paris, France" vs
+         "Paris, United States").
+       - Already-guessed cities appear marked and are not selectable.
+       - Full keyboard support: arrow keys move, Enter selects, Escape dismisses.
+         Use the ARIA combobox pattern (role=combobox, aria-expanded,
+         aria-activedescendant). The accessibility score depends on this.
+       - Input disabled while the city index is still loading.
+       - The dropdown must not be hidden behind the mobile keyboard.
+
+5.4  THE ENDGAME REVEAL
+     The payoff screen. Must show:
+       - A clear WON / LOST signal
+       - The city and country
+       - Day solved + number of wrong guesses + elapsed time
+       - All five clues re-presented
+       - The Day 5 phrase WITH its translation (now permitted)
+       - The flag (now permitted)
+       - A world map plotting the true city and the player's wrong guesses,
+         joined by curved great-circle arcs
+       - Source citations: population source, historical source (real links)
+       - The share button and the countdown to tomorrow
+     On a loss it must also show the player's final guess and its distance.
+
+     ABOUT THE MAP: it is a vector world map drawn with d3-geo (not raster tiles,
+     no API key, no satellite imagery). You can restyle its fills, strokes, ocean
+     pattern and arc styling however you like. Please keep it vector and keep it
+     tile-free — photographic tiles would fight almost any art direction and add
+     a paid dependency.
+
+     ON MOBILE: whatever two-up layout you design must collapse to a single
+     scrolling column at 390px.
+
+5.5  THE STATISTICS PANEL
+     Games played, won, win %, current streak, longest streak, AVERAGE DAY SOLVED
+     (this is the hero metric — give it primacy over streak and win rate), a
+     distribution of solves across Day 1-5 plus Lost, and average solve time.
+     Includes an export/import control for transferring progress between devices.
+     ZERO STATE MATTERS: with no games played it must read 0 / "—" and must never
+     render NaN.
+
+5.6  THE SHARE ARTEFACT
+     Produces a spoiler-free text block, currently:
+         The Lost Explorer #124
+         (five-cell strip, solved cell marked)
+         Found on Day 3 · 2 wrong turns
+         01:18
+         Streak 1
+     You may redesign the strip glyphs and the layout. ABSOLUTE RULE: the city
+     and country name must never appear in the output.
+
+5.7  THE "NO PUZZLE TODAY" STATE
+     When no puzzle is published for the current date the game shows a resting
+     state — the explorer is between journeys — plus the countdown. This is a
+     real screen players will see, not an error state. Design it properly.
+
+================================================================================
+6. THE DATA YOU HAVE TO WORK WITH
+================================================================================
+
+Everything comes from one hook. Design against these exact shapes.
+
+  useDailyGame() returns:
+    status        'loading' | 'resting' | 'ready'
+    clues         ServerDayClues | null   (only unlocked Days are present)
+    countryCode   string | null
+    resolution    ResolutionPayload | null   (null until the game ends)
+    game          GameState | null
+    startedAtMs   number
+    resolvedAtMs  number | null
+    submitGuess(candidate)
+    continueDay()
+
+  ServerDayClues — note every Day after day1 is OPTIONAL. It is absent from the
+  payload until the player unlocks it. This is deliberate: it is what stops a
+  player reading Day 5 on Day 1 from devtools. Design for progressive arrival.
+
+    day1  { landscape: string; metroPopulationMillions: number }
+    day2? { referenceCity, referenceCityCountry,
+            referenceCityCoordinates {lat,lng}, distanceKm, recognisability }
+    day3? { flagColours: string[] }
+    day4? { mapYear: number; historicalEntity: string }
+    day5? { language, languageCode, helpPhrase }
+
+  ResolutionPayload — only after the game ends:
+    city, country, countryCode, geonameId, coordinates {lat,lng},
+    helpPhraseTranslation,
+    populationSource { name, url, asOfYear },
+    historicalSourceUrl
+
+  GameState:
+    dayKey, currentDay (1-5), guesses[], wrongGuesses[], status
+    status is 'in_progress' | 'won' | 'lost'
+
+  Statistics (computeStats):
+    played, won, winPercent, currentStreak, longestStreak,
+    averageDaySolved (number | null), daySolves {1,2,3,4,5},
+    failed, averageSolveTimeMs (number | null)
+
+  landscape is a fixed enum — you need a visual treatment for EVERY value or some
+  future puzzle will render nothing:
+    flat, hilly, mountainous, mountains-visible, mountains-surrounding,
+    coastal, lakeside, river, dry, tropical, green-hills, desert, high-altitude
+
+  The clue sentences themselves are generated by src/domain/clueText.ts. Use
+  those functions; do not rewrite the wording. The templates are fixed by design
+  so every city reads the same way.
+
+================================================================================
+7. TYPOGRAPHY — ONE REAL CONSTRAINT
+================================================================================
+
+Pick any fonts you like, but Day 5 renders the local language in its native
+script. Across just the first six puzzles that includes Georgian, Vietnamese,
+Catalan, Spanish, Icelandic and Bosnian — and the content set will grow to
+include Japanese, Arabic, Cyrillic and Devanagari.
+
+Most display and handwriting fonts cover Latin only. If your chosen face lacks a
+script, that text renders as TOFU BOXES (empty rectangles). Tbilisi is the very
+first puzzle and it is Georgian, so this is immediate, not hypothetical.
+
+You need a per-script fallback stack, loaded per clue language rather than
+bundling every script into the app. The current implementation uses Noto families
+(Noto Sans Georgian, Noto Sans JP, Noto Naskh Arabic, Noto Sans Devanagari) and
+code-splits them — a sound approach you can reuse or replace.
+
+Also set lang= on the phrase element, for correct shaping and screen-reader
+pronunciation.
+
+Fonts are self-hosted via next/font/google (no runtime requests to Google).
+Keep that. Current type payload is roughly 120-180KB; stay in that range.
+
+================================================================================
+8. TECH CONTEXT
+================================================================================
+
+  Next.js 14 App Router, React 18, TypeScript (strict), Tailwind 3, bun
+  Styling today is CSS custom properties + CSS modules. You may switch approach.
+  Deployed to Vercel. Server routes are required — do NOT enable
+  output: 'export' (it would break clue delivery and leak answers; CI blocks it).
+
+  Existing token names (rename freely, just update consumers):
+    --paper --paper-deep --paper-high --paper-shade
+    --ink --ink-muted --ink-faint
+    --stamp-red --brass --map-teal --tape --tape-edge
+    --font-display --font-stamp --font-journal --font-ui --font-journal-min
+    --rule --rule-hair --rule-strong --radius-sm --radius-md
+    --shadow-lift --shadow-press
+    --dur-fast --dur-base --dur-slow --ease-paper --stagger
+    --texture-paper --texture-tile
+
+  Dark mode is NOT implemented. Tokens were structured so it could be a variable
+  swap. If you want to ship dark mode, you're welcome to — just keep it token-
+  driven.
+
+  Useful routes for seeing components in isolation:
+    /dev/primitives   stamps, tape, torn edges, cards
+    /dev/clues        Day 1-3 artefacts
+    /dev/day45        Day 4-5 artefacts
+    /dev/guess        guess input + autocomplete
+    /qa/map           the world map
+    /qa/stats         statistics panel
+    /qa/share         share button
+
+  Run it:
+    bun install
+    LOST_EXPLORER_DAILY_SECRET=dev bun run dev
+    open http://localhost:3000
+
+  Today's puzzle is Tbilisi. Puzzles run 2026-10-02 to 2026-10-07
+  (Tbilisi, Barcelona, Hanoi, Cusco, Reykjavik, Sarajevo). After that the app
+  shows the resting state until more puzzles are added.
+
+================================================================================
+9. HOW TO KNOW YOU HAVEN'T BROKEN ANYTHING
+================================================================================
+
+  bun test            expect 295 passing, 0 failing
+  bunx tsc --noEmit   expect exit 0
+  bun run build       expect exit 0
+  bun run puzzle-lint expect 6/6 puzzles passed
+
+If all four stay green you have not touched the engine. If bun test starts
+failing you have edited something in src/domain, src/state or src/search — revert
+that part.
+
+Then verify by hand:
+  - Play a full game on a 390px viewport. No horizontal scroll at any Day.
+  - Confirm earlier clues stay visible and do not shift when a new one arrives.
+  - On Day 3, confirm you cannot identify the country from what is shown.
+  - On Day 5, confirm the language is not named and the translation is not in the
+    DOM (check devtools, not just the screen).
+  - Lose a game on purpose and confirm the reveal shows the answer, the map, the
+    arcs and the sources.
+  - Check the share text contains no city name.
+  - Run Lighthouse mobile accessibility; it needs >= 90.
+
+================================================================================
+10. WHAT WOULD MAKE THIS GREAT
+================================================================================
+
+The mechanic's real pleasure is the moment the player thinks "wait — I think I
+know where I am." The design should build toward that. Each new Day arriving
+should feel like a small event, and the endgame should feel like a reward worth
+coming back for tomorrow.
+
+Things worth being bold about:
+  - The arrival of a new clue. Right now it is tasteful. It could be a moment.
+  - The win/lose beat. It should be unmistakable and a little theatrical.
+  - The endgame map. It is the most visually interesting surface in the product
+    and the main "I learned something" payoff. Let it breathe.
+  - The share artefact. It is the game's only growth channel; it should be
+    something people want to post.
+
+Things to stay disciplined about:
+  - Clue legibility beats atmosphere. A player must scan a clue in seconds.
+  - Restraint in palette and type count reads as confidence.
+  - It is a daily habit. It should feel calm and quick, not effortful. Whatever
+    you design will be seen by the same person every single day — favour things
+    that stay pleasant on the hundredth viewing over things that impress once.
+
+================================================================================
+END OF BRIEF
+================================================================================
