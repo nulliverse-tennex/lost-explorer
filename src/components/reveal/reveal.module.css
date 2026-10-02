@@ -1,0 +1,163 @@
+/* Endgame spread. Deliberately thin: layout and rules only, every value a
+   token, so the forthcoming visual redesign is a pure CSS change.
+
+   Mobile-first single column is the DEFAULT, not a breakpoint override — the
+   two-page spread is a desktop metaphor and must never force the 390px board
+   into a horizontal scroll. */
+
+.spread {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  max-inline-size: 78rem;
+  margin-inline: auto;
+  padding: var(--space-5) var(--space-4) var(--space-7);
+}
+
+.page {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.heading {
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+.chartFigure {
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.chartCaption {
+  margin-block-start: var(--space-3);
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+}
+
+.title {
+  font-size: var(--step-2);
+}
+
+.lede {
+  color: var(--ink-muted);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: var(--space-3) var(--space-4);
+  margin: 0;
+  border-block: var(--rule-hair) solid var(--rule);
+  padding-block: var(--space-3);
+}
+
+.factTerm {
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+.factValue {
+  margin: 0;
+  font-size: var(--step-1);
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding-inline-start: var(--space-5);
+}
+
+.logEntry {
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+}
+
+.flagStamp {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  border: 2px dashed var(--rule-strong);
+  padding: var(--space-2);
+  background-color: var(--paper-high);
+}
+
+.flagImage {
+  display: block;
+  inline-size: 5rem;
+  block-size: auto;
+}
+
+.flagLabel {
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+.fact {
+  border-inline-start: 3px solid var(--brass);
+  padding-inline-start: var(--space-4);
+  color: var(--ink-muted);
+}
+
+.sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+  list-style: none;
+}
+
+/* URLs are the one string in the reveal long enough to blow out a 390px
+   column on its own. */
+.sources a {
+  color: inherit;
+  overflow-wrap: anywhere;
+}
+
+.recapList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-block: var(--space-4) 0;
+  margin-inline: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recapItem {
+  min-inline-size: 0;
+}
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  border-block-start: 3px double var(--rule-strong);
+  padding-block-start: var(--space-5);
+}
+
+.shareSlot {
+  display: flex;
+  justify-content: center;
+  min-block-size: var(--space-6);
+}
+
+.pending {
+  padding-block: var(--space-6);
+  color: var(--ink-muted);
+}
+
+@media (min-width: 64rem) {
+  .spread {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-7);
+    padding-inline: var(--space-6);
+  }
+}
