@@ -1,0 +1,21 @@
+{
+  "buildCommand": "bun run build",
+  "devCommand": "bun run dev",
+  "installCommand": "bun install",
+  "env": {
+    "LOST_EXPLORER_DAILY_SECRET": {
+      "description": "HMAC secret for date-gated clue delivery. Must be set in production. If unset, the route handler fails closed with HTTP 500 to prevent accidental answer leakage."
+    }
+  },
+  "headers": [
+    {
+      "source": "/data/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

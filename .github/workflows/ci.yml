@@ -24,3 +24,33 @@ jobs:
       - run: bun run puzzle-lint
 
       - run: bun run build
+
+      - name: Guard against static export
+        run: |
+          if grep -rn "output.*export" next.config.*; then
+            echo "ERROR: output: 'export' found in next.config. Static export is incompatible with the date-gated route handler."
+            exit 1
+          fi
+          echo "✓ Static export guard passed"
+
+      - name: Guard against answer leakage in production
+        run: |
+          # Verify the route handler contains the production secret guard
+          if ! grep -q "!secret && process.env.NODE_ENV === 'production'" src/app/api/daily/route.ts; then
+            echo "ERROR: Production secret guard not found in route handler"
+            exit 1
+          fi
+          
+          # Verify the guard returns 500 on misconfiguration
+          if ! grep -q "return errorResponse('Daily puzzle service is misconfigured.', 500)" src/app/api/daily/route.ts; then
+            echo "ERROR: Guard does not return 500 on misconfiguration"
+            exit 1
+          fi
+          
+          # Verify the route handler never includes answer in production mode
+          if grep -q "answer.*puzzle\." src/app/api/daily/route.ts | grep -v "devMode"; then
+            echo "ERROR: Answer field may leak in production mode"
+            exit 1
+          fi
+          
+          echo "✓ Production secret guard verified in code"
