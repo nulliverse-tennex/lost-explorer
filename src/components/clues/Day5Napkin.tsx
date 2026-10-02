@@ -45,7 +45,11 @@ export function Day5Napkin({
               </ScriptPhrase>
             </p>
 
-            <p className={cls("face-stamp", day45.language)}>{language}</p>
+            {/* Naming the language pre-resolution hands over the country and
+                makes Day 5 a guaranteed solve; the script IS the clue. */}
+            {resolved ? (
+              <p className={cls("face-stamp", day45.language)}>{language}</p>
+            ) : null}
 
             {/* Rendered only once the day is over. Hiding it with CSS would
                 leave the answer's strongest tell one devtools glance away. */}
