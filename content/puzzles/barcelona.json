@@ -8,7 +8,7 @@
     "lat": 41.38879,
     "lng": 2.15899
   },
-  "publishDate": "2026-06-02",
+  "publishDate": "2026-10-03",
   "day1": {
     "landscape": "coastal",
     "metroPopulationMillions": 4.95,
@@ -29,7 +29,10 @@
     "recognisability": "global"
   },
   "day3": {
-    "flagColours": ["red", "yellow"]
+    "flagColours": [
+      "red",
+      "yellow"
+    ]
   },
   "day4": {
     "mapYear": 1812,

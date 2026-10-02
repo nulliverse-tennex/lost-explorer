@@ -8,7 +8,7 @@
     "lat": -13.53188,
     "lng": -71.96701
   },
-  "publishDate": "2026-06-04",
+  "publishDate": "2026-10-05",
   "day1": {
     "landscape": "high-altitude",
     "metroPopulationMillions": 0.492,
@@ -29,7 +29,10 @@
     "recognisability": "global"
   },
   "day3": {
-    "flagColours": ["red", "white"]
+    "flagColours": [
+      "red",
+      "white"
+    ]
   },
   "day4": {
     "mapYear": 1700,
