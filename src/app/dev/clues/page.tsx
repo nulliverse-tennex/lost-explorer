@@ -63,7 +63,7 @@ export default function CluesDemoPage({
       <section className="flex flex-col gap-8" data-section="artefacts">
         <Day1Horizon puzzle={shown} delayIndex={0} />
         <Day2Sign puzzle={shown} delayIndex={1} />
-        <Day3FlagCloth puzzle={shown} delayIndex={2} />
+        <Day3FlagCloth puzzle={shown} status="won" delayIndex={2} />
       </section>
 
       <section className="flex flex-col gap-4" data-section="motif-sheet">
