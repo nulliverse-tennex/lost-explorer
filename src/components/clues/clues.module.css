@@ -1,0 +1,216 @@
+.artefact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.eyebrow {
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+.narration {
+  color: var(--ink);
+  max-width: 34ch;
+}
+
+.aside {
+  color: var(--ink-muted);
+}
+
+/* ---------- Day 1 ---------- */
+
+.horizonSplit {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 40rem) {
+  .horizonSplit {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--space-5);
+  }
+}
+
+.sketchFrame {
+  position: relative;
+  padding: var(--space-3);
+  background-color: var(--paper-shade);
+  border: var(--rule-hair) solid var(--rule);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-press);
+}
+
+.sketch {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: color-mix(in oklab, var(--ink) 80%, var(--paper));
+}
+
+/* Only the pencil strokes are roughened. 240x96 is small enough that the
+   two-pass turbulence chain stays off the per-frame path; it is static and
+   prefers-reduced-motion strips it via [data-decorative-filter]. */
+.sketchStrokes {
+  filter: url(#le-rough-edge);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sketchCaption {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-1);
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+.population {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border-left: 3px solid var(--rule-strong);
+  padding-left: var(--space-4);
+}
+
+/* Block, not inline: at --step-2 a long figure such as "approximately 14
+   million" would otherwise break across the surrounding sentence mid-phrase. */
+.populationFigure {
+  display: block;
+  margin-block: var(--space-1);
+  color: var(--ink);
+  font-size: var(--step-2);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+/* ---------- Day 2 ---------- */
+
+.signMount {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-5) var(--space-2) var(--space-4);
+}
+
+/* The two tape strips land on the plate corners, so the plate carries the
+   crooked angle rather than the card — the card keeps its own resting tilt. */
+.signPlate {
+  position: relative;
+  transform: rotate(-2.6deg);
+  min-width: min(100%, 17rem);
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--map-teal);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, #ffffff 14%, transparent),
+    transparent 46%,
+    color-mix(in oklab, var(--ink) 16%, transparent)
+  );
+  border: 3px solid color-mix(in oklab, var(--paper-high) 78%, var(--map-teal));
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 14px -8px color-mix(in oklab, var(--ink) 60%, transparent);
+  text-align: center;
+}
+
+.signRivet {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: color-mix(in oklab, var(--ink) 45%, var(--map-teal));
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--paper-high) 40%, transparent);
+}
+
+.signRivetLeft {
+  top: 7px;
+  left: 9px;
+}
+
+.signRivetRight {
+  bottom: 7px;
+  right: 9px;
+}
+
+.signCity {
+  display: block;
+  color: color-mix(in oklab, var(--paper-high) 94%, var(--map-teal));
+  font-size: var(--step-2);
+  line-height: var(--leading-tight);
+  word-break: break-word;
+}
+
+.signRule {
+  margin: var(--space-2) auto;
+  width: 60%;
+  height: 1px;
+  background-color: color-mix(in oklab, var(--paper-high) 46%, transparent);
+}
+
+.signDistance {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-2);
+  color: color-mix(in oklab, var(--paper-high) 88%, var(--map-teal));
+  font-size: var(--step-1);
+}
+
+.signArrow {
+  color: color-mix(in oklab, var(--paper-high) 70%, var(--map-teal));
+}
+
+/* ---------- Day 3 ---------- */
+
+.clothMount {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-2);
+}
+
+.cloth {
+  position: relative;
+  width: min(100%, 13rem);
+  transform: rotate(2.2deg);
+  filter: drop-shadow(0 4px 7px color-mix(in oklab, var(--ink) 30%, transparent));
+}
+
+.clothWindow {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  background-color: var(--paper-deep);
+}
+
+/* The swatch is a crop, not a flag: at 420% only ~7-31% x / 30-54% y of the
+   artwork is on the sheet, which shows the colours but not the layout that
+   would name the country. max-width:none is required — Tailwind preflight's
+   `img { max-width: 100% }` otherwise clamps the width back to the window and
+   leaves bare backing down one side. */
+.clothFlag {
+  position: absolute;
+  top: -125%;
+  left: -30%;
+  width: 420%;
+  max-width: none;
+  height: 420%;
+  object-fit: cover;
+  opacity: 0.88;
+  filter: saturate(0.75) contrast(0.92);
+}
+
+.clothWeave {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--ink) 9%, transparent) 0 1px,
+      transparent 1px 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--ink) 7%, transparent) 0 1px,
+      transparent 1px 3px
+    );
+  pointer-events: none;
+}
