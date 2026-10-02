@@ -36,14 +36,15 @@ export function formatDistance(km: number): string {
 
 function formatColourList(colours: string[]): string {
   if (colours.length === 1) {
-    return colours[0];
+    return colours[0]!;
   }
   if (colours.length === 2) {
-    return `${colours[0]} and ${colours[1]}`;
+    return `${colours[0]!} and ${colours[1]!}`;
   }
 
   const allButLast = colours.slice(0, -1).join(', ');
-  return `${allButLast} and ${colours[colours.length - 1]}`;
+  const lastColour = colours[colours.length - 1]!;
+  return `${allButLast} and ${lastColour}`;
 }
 
 export function renderDay1(puzzle: Puzzle): string {

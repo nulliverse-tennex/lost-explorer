@@ -270,14 +270,14 @@ describe('renderDay3', () => {
   });
 
   it('renders two colours with "and"', () => {
-    const puzzle = { ...basePuzzle, day3: { flagColours: ['red', 'white'] } };
+    const puzzle = { ...basePuzzle, day3: { flagColours: ['red' as const, 'white' as const] } };
     const result = renderDay3(puzzle);
     expect(result).toContain('red and white');
     expect(result).toContain('and no other colours');
   });
 
   it('renders three colours with serial comma absent', () => {
-    const puzzle = { ...basePuzzle, day3: { flagColours: ['red', 'white', 'blue'] } };
+    const puzzle = { ...basePuzzle, day3: { flagColours: ['red' as const, 'white' as const, 'blue' as const] } };
     const result = renderDay3(puzzle);
     // Should be "red, white and blue" (no serial comma before "and")
     expect(result).toContain('red, white and blue');
