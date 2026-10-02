@@ -1,0 +1,276 @@
+/* ---------- Day 4 ---------- */
+
+.scrap {
+  position: relative;
+  overflow: hidden;
+  border: var(--rule-hair) solid
+    color-mix(in oklab, var(--brass) 42%, var(--rule));
+  border-radius: var(--radius-sm);
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  background-color: color-mix(in oklab, var(--paper) 76%, var(--brass));
+  background-image:
+    repeating-radial-gradient(
+      circle at 16% 124%,
+      transparent 0 24px,
+      color-mix(in oklab, var(--map-teal) 26%, transparent) 24px 25px
+    ),
+    repeating-radial-gradient(
+      circle at 93% -16%,
+      transparent 0 17px,
+      color-mix(in oklab, var(--map-teal) 18%, transparent) 17px 18px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--map-teal) 15%, transparent) 0 1px,
+      transparent 1px 34px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--map-teal) 15%, transparent) 0 1px,
+      transparent 1px 34px
+    ),
+    radial-gradient(
+      130% 95% at 88% 6%,
+      color-mix(in oklab, var(--brass) 36%, transparent),
+      transparent 62%
+    ),
+    var(--texture-paper);
+  background-size: auto, auto, auto, auto, auto,
+    var(--texture-tile) var(--texture-tile);
+}
+
+/* A one-pixel highlight with a soft bruise either side is what reads as a
+   fold; a plain rule reads as something drawn on the map. */
+.creases {
+  --crease-shade: color-mix(in oklab, var(--ink) 13%, transparent);
+  --crease-lift: color-mix(in oklab, #ffffff 60%, transparent);
+
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent calc(34% - 9px),
+      var(--crease-shade) calc(34% - 1px),
+      var(--crease-lift) 34%,
+      var(--crease-shade) calc(34% + 1px),
+      transparent calc(34% + 9px)
+    ),
+    linear-gradient(
+      90deg,
+      transparent calc(68% - 9px),
+      var(--crease-shade) calc(68% - 1px),
+      var(--crease-lift) 68%,
+      var(--crease-shade) calc(68% + 1px),
+      transparent calc(68% + 9px)
+    ),
+    linear-gradient(
+      180deg,
+      transparent calc(53% - 11px),
+      var(--crease-shade) calc(53% - 1px),
+      var(--crease-lift) 53%,
+      var(--crease-shade) calc(53% + 1px),
+      transparent calc(53% + 11px)
+    );
+}
+
+.scrapHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.sheetLabel {
+  color: color-mix(in oklab, var(--map-teal) 70%, var(--ink));
+  font-size: var(--step--2);
+}
+
+/* Doubled class on purpose: RubberStamp hard-codes `face-display`, and both
+   face helpers live in globals.css at equal specificity, so a single class
+   here would win or lose on stylesheet order alone. */
+.dateStamp.dateStamp {
+  font-family: var(--font-stamp);
+  font-size: var(--step-1);
+  letter-spacing: var(--tracking-stamp);
+  color: color-mix(in oklab, var(--stamp-red) 68%, var(--ink));
+}
+
+.scrapFoot {
+  position: relative;
+  margin-block-start: var(--space-7);
+  color: color-mix(in oklab, var(--map-teal) 62%, var(--ink));
+  font-size: var(--step--2);
+}
+
+/* ---------- Day 5 ---------- */
+
+@keyframes inkBleed {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* A masked element cannot cast a box-shadow — the mask clips the shadow along
+   the same scalloped line — so the lift goes on the wrapper instead. */
+.napkinMount {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-3);
+  filter: drop-shadow(
+    0 9px 16px color-mix(in oklab, var(--ink) 24%, transparent)
+  );
+}
+
+.napkin {
+  --scallop: 9px;
+
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  transform: rotate(-1.3deg);
+  padding: var(--space-7) var(--space-5);
+  background-color: color-mix(in oklab, var(--paper-high) 56%, #ffffff);
+  background-image: var(--texture-paper);
+  background-size: var(--texture-tile) var(--texture-tile);
+  text-align: center;
+
+  /* Two half-disc strips tiled along the top and bottom edges, unioned with a
+     plain rectangle for everything between them — the serviette cut. */
+  mask-image: radial-gradient(
+      circle var(--scallop) at 50% 0,
+      transparent 99%,
+      #000 100%
+    ),
+    radial-gradient(
+      circle var(--scallop) at 50% 100%,
+      transparent 99%,
+      #000 100%
+    ),
+    linear-gradient(#000, #000);
+  mask-size: calc(var(--scallop) * 2) var(--scallop),
+    calc(var(--scallop) * 2) var(--scallop),
+    100% calc(100% - var(--scallop) * 2);
+  mask-position: left top, left bottom, left var(--scallop);
+  mask-repeat: repeat-x, repeat-x, no-repeat;
+}
+
+.napkin::before {
+  content: "";
+  position: absolute;
+  inset: var(--space-4) var(--space-3);
+  border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+  box-shadow: inset 0 0 0 3px color-mix(in oklab, #ffffff 70%, transparent),
+    inset 0 0 0 4px color-mix(in oklab, var(--ink) 6%, transparent);
+  pointer-events: none;
+}
+
+.stain {
+  position: absolute;
+  top: -24px;
+  right: 6%;
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background-image: radial-gradient(
+    circle,
+    transparent 0 45%,
+    color-mix(in oklab, var(--brass) 40%, transparent) 46% 51%,
+    color-mix(in oklab, var(--brass) 16%, transparent) 52% 59%,
+    transparent 60%
+  );
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.overheard {
+  position: relative;
+  margin-inline: auto;
+  max-width: 28ch;
+  color: var(--ink-muted);
+}
+
+.phraseLine {
+  position: relative;
+  margin-block: var(--space-5) var(--space-4);
+}
+
+/* Zero specificity on purpose. next/font sets this same property from its own
+   class (0,1,0) on this very element, so it always wins regardless of
+   stylesheet order — the same trap documented in globals.css. */
+:where(.phrase) {
+  --font-script: var(--font-journal);
+}
+
+/* --font-script is either the one Noto family this clue's language loaded or,
+   for anything Caveat already covers, the journal hand itself. It must come
+   FIRST: --font-journal ends in the generic `cursive`, which resolves to a
+   broad system face (DejaVu and friends carry Georgian and Arabic), and that
+   face would then satisfy the glyphs and the Noto webfont would never even be
+   requested. The literal names behind it are the pre-webfont safety net —
+   drop that tail and a slow connection shows tofu. */
+.phrase {
+  display: inline-block;
+  max-width: 100%;
+  font-family: var(--font-script), "Noto Sans Georgian", "Noto Sans JP",
+    "Noto Naskh Arabic", "Noto Sans Devanagari", "Noto Sans", sans-serif;
+  font-size: var(--step-3);
+  line-height: 1.26;
+  color: var(--ink);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+.language {
+  position: relative;
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+.translation {
+  position: relative;
+  display: block;
+  margin: var(--space-5) auto 0;
+  padding-block-start: var(--space-4);
+  max-width: 30ch;
+  border-block-start: var(--rule-hair) dashed var(--rule);
+  color: var(--ink-faint);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-stamp);
+  text-transform: uppercase;
+  animation: inkBleed var(--dur-slow) var(--ease-paper) both;
+}
+
+.finalLine {
+  position: relative;
+  margin-block-start: var(--space-6);
+}
+
+.finalStamp.finalStamp {
+  font-family: var(--font-stamp);
+  font-size: var(--step-0);
+  color: var(--stamp-red);
+}
+
+@media (min-width: 48rem) {
+  .phrase {
+    font-size: var(--step-4);
+  }
+
+  .napkin {
+    padding: var(--space-8) var(--space-7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .translation {
+    animation: none;
+  }
+}
