@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fontVariableClassName } from "@/styles/fonts";
 import "./globals.css";
+import "@/styles/journal.css";
 
 export const metadata: Metadata = {
   title: "The Lost Explorer",
@@ -14,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={fontVariableClassName}>
-      <body>{children}</body>
+      <body className="journal-desk">{children}</body>
     </html>
   );
 }

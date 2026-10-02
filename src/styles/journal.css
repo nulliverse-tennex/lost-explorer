@@ -1,0 +1,225 @@
+/* The journal is a physical object: a leaf of aged paper on a worn desk,
+   stitched at the left binding, torn along the right edge.
+
+   Structural rule governing this whole file: every decorative layer is an
+   absolute SIBLING of the content column, never an ancestor of it. `.stage`
+   establishes `isolation: isolate` so `.ink-layer` multiply-blends against the
+   paper, and that blend is destroyed — silently, with no error, just flat ink —
+   by a `transform`, `filter`, `opacity < 1`, `mask` or `will-change` on any
+   element between `.stage` and the blending element.
+   https://bugs.webkit.org/show_bug.cgi?id=129154
+   So the torn-edge mask lives on `.journal__surface`, a sibling leaf, and the
+   chain `.journal > .journal__column > .journal__content` carries no grouping
+   property at all. */
+
+.journal-desk {
+  background-color: var(--paper-deep);
+}
+
+.journal {
+  --journal-binding: 26px;
+  --journal-deckle: 12px;
+  --journal-gutter: var(--space-4);
+  --journal-slot-day: 3.25rem;
+  --journal-slot-actions: 4.5rem;
+  --journal-slot-footer: var(--space-6);
+
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  block-size: 100vh;
+  block-size: 100dvh;
+  max-inline-size: 48rem;
+  margin-inline: auto;
+}
+
+/* z-index: -1 paints the paper below the in-flow column without having to give
+   the column a z-index of its own. */
+.journal__surface {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--paper-high);
+  background-image:
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--ink) 20%, transparent) 0,
+      color-mix(in oklab, var(--ink) 4%, transparent) calc(var(--journal-binding) * 0.8),
+      transparent calc(var(--journal-binding) * 1.6)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 27px,
+      color-mix(in oklab, var(--rule-ruled-line) 42%, transparent) 27px 28px
+    ),
+    var(--texture-paper);
+  background-repeat: no-repeat, repeat, repeat;
+  background-size:
+    100% 100%,
+    100% 100%,
+    var(--texture-tile) var(--texture-tile);
+  box-shadow: var(--shadow-lift);
+
+  /* Two mask layers unioned: a solid rectangle for everything left of the
+     deckle, plus a vertically tiling torn profile for the right edge. */
+  mask-image: linear-gradient(#000 0 0), url("/textures/deckle-right.svg");
+  mask-size: calc(100% - var(--journal-deckle)) 100%, var(--journal-deckle) 160px;
+  mask-position: left top, right top;
+  mask-repeat: no-repeat, repeat-y;
+}
+
+.journal__binding {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: -1;
+  inline-size: var(--journal-binding);
+}
+
+.journal__binding::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--space-6);
+  inset-inline-start: calc(50% - 3px);
+  inline-size: 6px;
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    var(--paper-deep) 0 2px,
+    color-mix(in oklab, var(--ink) 14%, transparent) 2px 2.8px,
+    transparent 2.8px
+  );
+  background-size: 6px 34px;
+  background-repeat: repeat-y;
+}
+
+/* Two opposed repeating gradients clipped to a narrow strip read as saddle
+   stitches — no filter, no SVG, nothing per-frame. */
+.journal__binding::after {
+  content: "";
+  position: absolute;
+  inset-block: var(--space-6);
+  inset-inline-start: calc(50% - 7px);
+  inline-size: 14px;
+  background-image:
+    repeating-linear-gradient(
+      28deg,
+      color-mix(in oklab, var(--ink) 62%, var(--paper)) 0 1.5px,
+      transparent 1.5px 17px
+    ),
+    repeating-linear-gradient(
+      -28deg,
+      color-mix(in oklab, var(--ink) 48%, var(--paper)) 0 1.5px,
+      transparent 1.5px 17px
+    );
+}
+
+.journal__column {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-block-size: 0;
+  padding-block: var(--space-5) 0;
+  padding-inline: calc(var(--journal-binding) + var(--journal-gutter))
+    calc(var(--journal-deckle) + var(--journal-gutter));
+}
+
+.journal__masthead {
+  border-block-end: 3px double var(--rule-strong);
+  padding-block-end: var(--space-3);
+}
+
+.journal__eyebrow {
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+.journal__title {
+  margin-block-start: var(--space-2);
+  font-size: var(--step-4);
+  text-transform: uppercase;
+}
+
+.journal__title-accent {
+  color: var(--stamp-red);
+}
+
+.journal__strap {
+  margin-block-start: var(--space-3);
+  color: var(--ink-muted);
+  font-size: var(--step--2);
+}
+
+.journal__dayslot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-block-size: var(--journal-slot-day);
+}
+
+/* transform and mix-blend-mode sit on the SAME element on purpose: a rotation
+   on a wrapper would flatten the ink of everything inside it. */
+.journal__daystamp {
+  transform: rotate(-1.6deg);
+  mix-blend-mode: multiply;
+  border: 2px solid var(--stamp-red);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-3);
+  color: var(--stamp-red);
+  font-size: var(--step--1);
+  white-space: nowrap;
+}
+
+.journal__puzzleno {
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-stamp);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.journal__content {
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: var(--space-4);
+  scrollbar-color: var(--rule-strong) transparent;
+  scrollbar-width: thin;
+}
+
+.journal__actions {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--journal-slot-actions);
+  border-block-start: var(--rule-hair) solid var(--rule);
+  padding-block: var(--space-3);
+  padding-block-end: max(var(--space-3), env(safe-area-inset-bottom));
+}
+
+/* Reserved for the GeoNames attribution; Task 28 fills it. */
+.journal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--journal-slot-footer);
+  padding-inline: calc(var(--journal-binding) + var(--journal-gutter))
+    calc(var(--journal-deckle) + var(--journal-gutter));
+  color: var(--ink-faint);
+  font-size: var(--step--2);
+}
+
+@media (min-width: 48rem) {
+  .journal {
+    --journal-binding: 42px;
+    --journal-deckle: 16px;
+    --journal-gutter: var(--space-6);
+    --journal-slot-day: 4rem;
+  }
+
+  .journal__title {
+    font-size: var(--step-5);
+  }
+
+  .journal__eyebrow,
+  .journal__strap {
+    font-size: var(--step--1);
+  }
+}
