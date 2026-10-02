@@ -1,0 +1,285 @@
+.composer {
+  /* Sticky, not fixed: the slip stays inside the journal column so the clue
+     cards keep scrolling behind it, and the actions stay in thumb reach on a
+     390px screen without a portal. */
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  background-color: var(--paper);
+  background-image: var(--texture-paper);
+  background-size: var(--texture-tile) var(--texture-tile);
+  border-top: var(--rule-hair) solid var(--rule-strong);
+  box-shadow: 0 -10px 20px -16px color-mix(in oklab, var(--ink) 55%, transparent);
+}
+
+.composer::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  border-top: var(--rule-hair) dashed var(--rule);
+  pointer-events: none;
+}
+
+.label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--font-stamp);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-stamp);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+
+.labelLeader {
+  flex: 1;
+  border-bottom: var(--rule-hair) dotted var(--rule);
+  transform: translateY(-0.2em);
+}
+
+/* Deliberately not a positioning context: the listbox anchors to .composer
+   instead, so it clears the whole slip rather than covering its own label. */
+.fieldWrap {
+  position: static;
+}
+
+.field {
+  width: 100%;
+  min-height: 52px;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-journal);
+  font-size: var(--text-journal);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+  background-color: transparent;
+  background-image: linear-gradient(
+    var(--rule-ruled-line),
+    var(--rule-ruled-line)
+  );
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 100% 2px;
+  border: 0;
+  border-radius: 0;
+  caret-color: var(--stamp-red);
+  transition: background-size var(--dur-fast) var(--ease-paper);
+}
+
+.field::placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+/* The global 2px solid oxblood outline is kept — only restyled to a stitched
+   dash, and reinforced by the ruled line inking over to oxblood. Nothing is
+   removed. */
+.field:focus-visible {
+  outline: 2px dashed var(--stamp-red);
+  outline-offset: 4px;
+  background-image: linear-gradient(var(--stamp-red), var(--stamp-red));
+  background-size: 100% 3px;
+}
+
+.field:disabled {
+  color: var(--ink-faint);
+  cursor: progress;
+  background-image: linear-gradient(var(--rule), var(--rule));
+  background-size: 100% 2px;
+}
+
+/* Opens UPWARD on purpose: on a phone the on-screen keyboard owns the bottom
+   half of the viewport, and a downward list anchored to a bottom-sticky input
+   would sit entirely behind it. */
+.listbox {
+  position: absolute;
+  bottom: calc(100% + var(--space-2));
+  left: var(--space-4);
+  right: var(--space-4);
+  z-index: 4;
+  max-height: min(42vh, 340px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  background-color: var(--paper-high);
+  background-image: var(--texture-paper);
+  background-size: var(--texture-tile) var(--texture-tile);
+  border: var(--rule-hair) solid var(--rule-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lift);
+}
+
+.option {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  min-height: 48px;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--rule-hair) dotted var(--rule);
+  cursor: pointer;
+}
+
+.option:last-child {
+  border-bottom: 0;
+}
+
+/* data-active, not :hover — the active option is driven by the arrow keys
+   first and the pointer second, so the state is reachable without a mouse. */
+.option[data-active="true"] {
+  background-color: var(--paper-shade);
+}
+
+.option[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--stamp-red);
+}
+
+.optionName {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+
+.optionCountry {
+  font-family: var(--font-stamp);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-stamp);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+.optionSpent {
+  cursor: not-allowed;
+}
+
+.optionSpent .optionName {
+  color: var(--ink-faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--stamp-red);
+  text-decoration-thickness: 2px;
+}
+
+.optionSpent[data-active="true"] {
+  background-color: transparent;
+}
+
+.optionSpentMark {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0 var(--space-1);
+  font-family: var(--font-stamp);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-stamp);
+  text-transform: uppercase;
+  color: var(--stamp-red);
+  border: var(--rule-hair) solid currentColor;
+  border-radius: var(--radius-sm);
+}
+
+.note {
+  font-family: var(--font-journal);
+  font-size: var(--font-journal-min);
+  line-height: var(--leading-snug);
+  color: var(--ink-faint);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 30rem) {
+  .actionsPair {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.btn {
+  position: relative;
+  min-height: 52px;
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-stamp);
+  text-transform: uppercase;
+  color: var(--ink);
+  background-color: transparent;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-paper),
+    box-shadow var(--dur-fast) var(--ease-paper);
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: var(--rule-hair) solid currentColor;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.btnPrimary {
+  color: var(--paper-high);
+  background-color: var(--stamp-red);
+  border-color: var(--stamp-red);
+}
+
+.btnFinal {
+  font-size: var(--step-2);
+  min-height: 60px;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-press);
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+.btn:disabled {
+  color: var(--ink-muted);
+  background-color: var(--paper-shade);
+  border-color: var(--rule-strong);
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+.btn:disabled::after {
+  opacity: 0;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
